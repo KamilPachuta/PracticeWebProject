@@ -1,3 +1,5 @@
+using NLog.Web;
+
 namespace RestaurantAPI
 {
     public class Program
@@ -12,7 +14,8 @@ namespace RestaurantAPI
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-            });
+            })
+            .UseNLog();
     }
 }
 
