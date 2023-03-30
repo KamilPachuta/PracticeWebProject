@@ -16,6 +16,13 @@ namespace RestaurantAPI
         {
             if(_dbContext.Database.CanConnect())
             {
+                var pendingMigrations = _dbContext.Database.GetPendingMigrations();
+
+                if(pendingMigrations is not null)
+                {
+                    _dbContext.Database.Migrate();
+                }
+
                 if(!_dbContext.Roles.Any())
                 {
                     var roles = GetRoles();
