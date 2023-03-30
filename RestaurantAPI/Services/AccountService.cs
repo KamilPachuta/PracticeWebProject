@@ -35,7 +35,8 @@ namespace RestaurantAPI.Services
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
-                
+                Nationality = dto.Nationality,
+                DateOfBirth = dto.DateOfBirth,
                 RoleId = dto.RoleId
             };
             var hashedPassword = _passwordHasher.HashPassword(newUser, dto.Password);
@@ -68,11 +69,22 @@ namespace RestaurantAPI.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
-                new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
-                //new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd")),
-                //new Claim("Nationality", user.Nationality)
+                new Claim(ClaimTypes.Role, $"{user.Role.Name}"), // wymagadne do uzywania nagłówków [Authorize(roles = "")]
 
             };
+
+            if(!string.IsNullOrEmpty(user.Nationality))
+            {
+                claims.Add(
+                    new Claim("Nationality", user.Nationality)
+                    );
+            }
+            if (user.DateOfBirth is not null)
+            {
+                claims.Add(
+                    new Claim("DateOfBirth", user.DateOfBirth.Value.ToString("yyyy-MM-dd"))
+                    );
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
